@@ -23,6 +23,7 @@ data_xin = data_xin %>% rename("course.hours"="course hours")
 data_zhang = read_excel("data.csv") %>% tibble::tibble() 
 data_zhang %>% head()
 data_zhang %>% names()
+data_zhang$Date = data_zhang$Date %>% as.Date(.,format="%Y-%m-%d")
 data_zhang = data_zhang %>% rename("course.hours"="course hours")
 data_zhang = data_zhang %>% select( data_xin %>% names())
 

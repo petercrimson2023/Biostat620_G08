@@ -67,7 +67,7 @@ ACF plots shows that three time series almost doesn`t have autocorrelation.
 
 # Occupation time plot
 
-```{r}
+```{r,fig.width=15, fig.height=}
 
 Occu_plot = function(data)
 {
@@ -79,9 +79,9 @@ Occu_plot = function(data)
   
   g1 = ggplot(temp, aes(x = c, y = st)) +
     geom_point(size = 1) +
-    geom_smooth(method = "gam", se = FALSE) +
+    geom_line(color="blue")+
     labs(title = "Occupation Time Curve for Total Screen Time", x = "Total Screen Time (min)", y = "Occupation Time Curve") + theme(plot.title = element_text(hjust = 0.5))
-
+  
   # Total social screen time
   
   c = seq(0, max(data$Social.ST.min) + 1, max(data$Social.ST.min) / 100)
@@ -92,16 +92,69 @@ Occu_plot = function(data)
   
   g2 = ggplot(temp, aes(x = c, y = st)) +
     geom_point(size = 1) +
-    geom_smooth(method = "gam", se = TRUE) +
+    geom_line(color="blue")+
     labs(title = "Occupation Time Curve for Social Screen Time", x = "Social Screen Time (min)", y = "Occupation Time Curve") + theme(plot.title = element_text(hjust = 0.5))
   
-  g1+g2+plot_layout(ncol = 2)
+  # Proportion
+  
+  c = seq(0, max(data$proportion) + 1, max(data$proportion) / 100)
+  st = sapply(c, function(x) {
+    return(sum(data$proportion >= x))
+  }) / length(data$proportion)
+  temp = data.frame(c, st)
+  
+  g3 = ggplot(temp, aes(x = c, y = st)) +
+    geom_point(size = 1) +
+    geom_line(color="blue")+
+    labs(title = "Occupation Time Curve for Proportion", x = "Proportion", y = "Occupation Time Curve") + theme(plot.title = element_text(hjust = 0.5))
+  
+  # Pickups
+  
+  c = seq(0, max(data$Pickups) + 1, max(data$Pickups) / 100)
+  st = sapply(c, function(x) {
+    return(sum(data$Pickups >= x))
+  }) / length(data$Pickups)
+  temp = data.frame(c, st)
+  
+  g4 = ggplot(temp, aes(x = c, y = st)) +
+    geom_point(size = 1) +
+    geom_line(color="blue")+
+    labs(title = "Occupation Time Curve for Pickups", x = "Pickups", y = "Occupation Time Curve") + theme(plot.title = element_text(hjust = 0.5))
+  
+  
+  # Duration per use
+  
+  c = seq(0,
+          max(data$duration_per_use) + 1,
+          max(data$duration_per_use) / 100)
+  st = sapply(c, function(x) {
+    return(sum(data$duration_per_use >= x))
+  }) / length(data$duration_per_use)
+  temp = data.frame(c, st)
+  
+  g5 = ggplot(temp, aes(x = c, y = st)) +
+    geom_point(size = 1) +
+    geom_line(color="blue")+
+    labs(title = "Occupation Time Curve for Duration per Use", x = "Duration per Use (min)", y = "Occupation Time Curve") + theme(plot.title = element_text(hjust = 0.5))
+  
+  g1 + g2 + g3 + g4 + g5 + plot_layout(ncol = 3)
 }
 
 
 Occu_plot(data_bulun)
 Occu_plot(data_xin)
 Occu_plot(data_zhang)
+
+```
+
+Significant difference in occupation time curves of Total Screeen time and Social Screen time indicates that the three students have different patterns of using screen time.
+
+
+```{r}
+
+# Strata Comparison of Occupation time curve of proportion and social screen time
+# grouped by semster*weekday
+
 
 
 

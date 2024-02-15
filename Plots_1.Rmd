@@ -149,14 +149,89 @@ Occu_plot(data_zhang)
 
 Significant difference in occupation time curves of Total Screeen time and Social Screen time indicates that the three students have different patterns of using screen time.
 
-
 ```{r}
 
-# Strata Comparison of Occupation time curve of proportion and social screen time
-# grouped by semster*weekday
+plot_occupation_time_curve <- function(data, time_column, condition_column, condition_values, colors = c("blue", "red")) {
 
+  if (length(condition_values) != 2 || length(colors) != 2) {
+    stop("condition_values and colors must be vectors of length 2.")
+  }
 
+  data_list <- lapply(condition_values, function(cond) {
+    data_filtered <- data %>%
+      filter(!!sym(condition_column) == cond)
+    
+    c_values = seq(0, max(data_filtered[[time_column]]) + 1, length.out = 101)
+    st_values = sapply(c_values, function(x) {
+      sum(data_filtered[[time_column]] >= x)
+    }) / length(data_filtered[[time_column]])
+    temp_data = data.frame(c = c_values, st = st_values, condition = as.character(cond))
+    
+    return(temp_data)
+  })
+  
+  temp_combined <- do.call(rbind, data_list)
+  
+  ggplot(temp_combined, aes(x = c, y = st, color = condition)) +
+    geom_point(size = 1) +
+    geom_line() +
+    labs(title = "Occupation Time Curve for Social Screen Time", 
+         x = "Social Screen Time (min)", 
+         y = "Occupation Time Curve") +
+    theme(plot.title = element_text(hjust = 0.5)) +
+    scale_color_manual(values = setNames(colors, condition_values))
+}
 
+plot_occupation_time_curve(data_bulun, "Social.ST.min", "semester", c(1, 0), c("blue", "red"))
+plot_occupation_time_curve(data_xin, "Social.ST.min", "semester", c(1, 0), c("blue", "red"))
+plot_occupation_time_curve(data_zhang, "Social.ST.min", "semester", c(1, 0), c("blue", "red"))
 
 ```
 
+```{r}
+
+plot_occupation_time_curve(data_bulun, "Social.ST.min", "semester_weekday", c(1, 0), c("blue", "red"))
+plot_occupation_time_curve(data_xin, "Social.ST.min", "semester_weekday", c(1, 0), c("blue", "red"))
+plot_occupation_time_curve(data_zhang, "Social.ST.min", "semester_weekday", c(1, 0), c("blue", "red"))
+
+```
+
+
+
+```{r}
+
+plot_occupation_time_curve(data_bulun, "proportion", "semester", c(1, 0), c("blue", "red"))
+plot_occupation_time_curve(data_xin, "proportion", "semester", c(1, 0), c("blue", "red"))
+plot_occupation_time_curve(data_zhang, "proportion", "semester", c(1, 0), c("blue", "red"))
+
+```
+
+```{r}
+
+plot_occupation_time_curve(data_bulun, "proportion", "semester_weekday", c(1, 0), c("blue", "red"))
+plot_occupation_time_curve(data_xin, "proportion", "semester_weekday", c(1, 0), c("blue", "red"))
+plot_occupation_time_curve(data_zhang, "proportion", "semester_weekday", c(1, 0), c("blue", "red"))
+
+```
+
+```{r}
+
+plot_occupation_time_curve(data_bulun, "Pickups", "semester", c(1, 0), c("blue", "red"))
+plot_occupation_time_curve(data_xin, "Pickups", "semester", c(1, 0), c("blue", "red"))
+plot_occupation_time_curve(data_zhang, "Pickups", "semester", c(1, 0), c("blue", "red"))
+
+```
+
+```{r}
+
+plot_occupation_time_curve(data_bulun, "duration_per_use", "semester", c(1, 0), c("blue", "red"))
+plot_occupation_time_curve(data_xin, "duration_per_use", "semester", c(1, 0), c("blue", "red"))
+plot_occupation_time_curve(data_zhang, "duration_per_use", "semester", c(1, 0), c("blue", "red"))
+
+```
+
+
+
+```{r}
+
+```

@@ -1,0 +1,109 @@
+---
+title: "Plots"
+author: "Bulun Te"
+date: "2024-02-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, message=FALSE, warning=FALSE, include=FALSE}
+# Load the data
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+Sys.setenv(LANGUAGE = "en")
+library(here)
+library(patchwork)
+setwd(here())
+load("GroupData.RData")
+```
+
+
+# Time Series Plot
+
+```{r}
+
+B_plot = ggplot(data = data_bulun ,aes(x=Date, y=Social.ST.min)) + 
+  geom_line() + 
+  geom_smooth(method = "gam")+
+  labs(title="Bulun's Social Screen Time", x="Date", y="Social ST min")
+
+X_plot = ggplot(data = data_xin ,aes(x=Date, y=Social.ST.min)) +
+  geom_line() + 
+  geom_smooth(method = "gam")+
+  labs(title="Xinwei's Social Screen Time", x="Date", y="Social ST min")+
+  theme_minimal()
+
+Z_plot = ggplot(data = data_zhang ,aes(x=Date, y=Social.ST.min)) +
+  geom_line() + 
+  geom_smooth(method = "gam")+
+  labs(title="Zhang's Social Screen Time", x="Date", y="Social ST min")+
+  theme_minimal()
+
+B_plot + X_plot + Z_plot + plot_layout(ncol = 3)
+
+
+```
+
+Time series plots shows that three time series have different trends. Bulun's time series has a increasing trend, Xinwei's time series has a almost constant trend and Zhang's time series has a decreasing trend.
+
+
+## ACF
+
+```{r}
+
+acf(data_bulun$Social.ST.min, main="Bulun's non-academic activities")
+acf(data_xin$Social.ST.min, main="Xinwei's non-academic activities")
+acf(data_zhang$Social.ST.min, main="Zhang's non-academic activities")
+
+```
+
+
+ACF plots shows that three time series almost doesn`t have autocorrelation.
+
+
+# Occupation time plot
+
+```{r}
+
+Occu_plot = function(data)
+{
+  c = seq(0, max(data$Total.ST.min) + 1, max(data$Total.ST.min) / 100)
+  st = sapply(c, function(x) {
+    return(sum(data$Total.ST.min >= x))
+  }) / length(data$Total.ST.min)
+  temp = data.frame(c, st)
+  
+  g1 = ggplot(temp, aes(x = c, y = st)) +
+    geom_point(size = 1) +
+    geom_smooth(method = "gam", se = FALSE) +
+    labs(title = "Occupation Time Curve for Total Screen Time", x = "Total Screen Time (min)", y = "Occupation Time Curve") + theme(plot.title = element_text(hjust = 0.5))
+
+  # Total social screen time
+  
+  c = seq(0, max(data$Social.ST.min) + 1, max(data$Social.ST.min) / 100)
+  st = sapply(c, function(x) {
+    return(sum(data$Social.ST.min >= x))
+  }) / length(data$Social.ST.min)
+  temp = data.frame(c, st)
+  
+  g2 = ggplot(temp, aes(x = c, y = st)) +
+    geom_point(size = 1) +
+    geom_smooth(method = "gam", se = TRUE) +
+    labs(title = "Occupation Time Curve for Social Screen Time", x = "Social Screen Time (min)", y = "Occupation Time Curve") + theme(plot.title = element_text(hjust = 0.5))
+  
+  g1+g2+plot_layout(ncol = 2)
+}
+
+
+Occu_plot(data_bulun)
+Occu_plot(data_xin)
+Occu_plot(data_zhang)
+
+
+
+```
+

@@ -1,0 +1,184 @@
+---
+title: "HW1"
+author: "Xinyu Zhang"
+date: "2024-02-04"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**Problem 1**
+*(d)*
+```{r}
+library(ggplot2)
+library(lubridate)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(gridExtra)
+
+data <- read_csv("D:/620/data.csv", show_col_types = FALSE)
+data$Date <- as.Date(data$Date, format="%Y/%m/%d")
+data$proportion_ST <- data$Social.ST.min / data$Total.ST.min
+data$Avg_Duration <- data$Total.ST.min / data$Pickups
+Xt <- ifelse(weekdays(data$Date) %in% c("星期六", "星期日"), 0, 1) 
+Xt <- as.factor(Xt)
+# Cause my R Studio only supports Chinese. "星期六"means Saturday,"星期日" means Sunday.
+```
+
+**Problem 2**
+*(a)*
+```{r}
+total <- ggplot(data,aes(x = Date,y = Total.ST.min,color = Xt))+
+  geom_line(color = "steelblue")+
+  geom_point()+
+  xlab("")+ylab("total screen time (min)")+
+  scale_color_manual(labels=c("weekend","weekday"),values=c("red","black"))
+
+social <- ggplot(data,aes(x = Date,y = Social.ST.min, color = Xt))+
+  geom_line(color = "steelblue")+
+  geom_point()+
+  xlab("")+ylab("social screen time (min)")+
+  scale_color_manual(labels=c("weekend","weekday"),values=c("red","black"))
+
+Pickups <- ggplot(data,aes(x = Date,y = Pickups, color = Xt))+
+  geom_line(color = "steelblue")+
+  geom_point()+
+  xlab("")+ylab("Number of Pickups")+
+  scale_color_manual(labels=c("weekend","weekday"),values=c("red","black"))
+
+proportion_st <- ggplot(data,aes(x = Date,y = proportion_ST, color = Xt))+
+  geom_line(color = "steelblue")+
+  geom_point()+
+  xlab("")+ylab("Daily proportion of social screen time")+
+  scale_color_manual(labels=c("weekend","weekday"),values=c("red","black"))
+
+avg_duration <- ggplot(data,aes(x = Date,y = Avg_Duration, color = Xt))+
+  geom_line(color = "steelblue")+
+  geom_point()+
+  xlab("")+ylab("Average Duration per Pickup (minutes)")+
+  scale_color_manual(labels=c("weekend","weekday"),values=c("red","black"))
+
+total
+social
+Pickups
+proportion_st
+avg_duration
+grid.arrange(total, social, Pickups, proportion_st, avg_duration, nrow = 5)
+```
+
+*(b)*
+```{r}
+library(GGally)
+
+numeric_data <- data %>% select(Total.ST.min, Social.ST.min, Pickups, proportion_ST, Avg_Duration)
+
+ggpairs(numeric_data)
+
+```
+
+*(c)*
+```{r}
+plot_ecdf <- function(data, column) {
+  ecdf_data <- ecdf(data[[column]])
+  plot(ecdf_data, main = paste("Occupation Time Curve for", column), xlab = column, ylab = "Cumulative Probability")
+}
+
+# Apply the function to each of the five variables
+par(mfrow = c(3, 2))  # Organize the plots into a 3x2 grid
+plot_ecdf(data, "Total.ST.min")
+plot_ecdf(data, "Social.ST.min")
+plot_ecdf(data, "Pickups")
+# Assuming you also have a variable for 'Proportion of Social Screen Time' and 'Duration per Use'
+plot_ecdf(data, "proportion_ST")
+plot_ecdf(data, "Avg_Duration")
+```
+*(d)*
+```{r}
+acf(data$Total.ST.min, plot = FALSE)
+acf(data$Social.ST.min, plot = FALSE)
+acf(data$Pickups, plot = FALSE)
+acf(data$proportion_ST, plot = FALSE)
+acf(data$Avg_Duration, plot = FALSE)
+```
+
+
+**Problem 3**
+*(a)*
+```{r}
+library(circular)
+data$Pickup.1st <- as.POSIXct(data$Pickup.1st, format = "%H:%M:%S")
+
+# Function to convert time to angle
+time_to_angle <- function(time) {
+  # Extract hours and minutes
+  hrs <- as.numeric(format(time, "%H"))
+  mins <- as.numeric(format(time, "%M"))
+  
+  # Calculate the angle (0 degrees at midnight, 360 degrees at next midnight)
+  angle <- (hrs * 60 + mins) / (24 * 60) * 360
+  return(angle)
+}
+
+# Apply the function to the time column to create a new angle column
+data$Pickup.1st.angle <- sapply(data$Pickup.1st, time_to_angle)
+data$Pickup.1st.circular <- circular(data$Pickup.1st.angle, units = "degrees", template = "none")
+```
+
+*(b)*
+```{r}
+pickup_circular <- circular(data$Pickup.1st.angle, units = "degrees",template='clock24' )
+
+plot(pickup_circular, col="blue")
+```
+*(c)*
+```{r}
+plot(pickup_circular, stack=TRUE, bins=25, col="blue")
+```
+
+**Problem 4**
+*(b)*
+```{r}
+data$ScreenTimeHours <- data$Total.ST.min / 60 
+model <- glm(Pickups ~ offset(log(ScreenTimeHours)), family = poisson(link = "log"), data = data)
+summary(model)
+
+```
+*(c)*
+```{r}
+Zt <- ifelse(data$Date >= as.Date("2024-01-20"), 1, 0)
+glm_model <- glm(Pickups ~ Xt + Zt + offset(log(ScreenTimeHours)), family = poisson, data = data)
+summary(glm_model)
+```
+
+**Problem 5**
+*(a)*
+```{r}
+library(circular)
+
+fit <- mle.vonmises(data$Pickup.1st.circular)
+
+fit
+
+```
+*(b)*
+```{r}
+# Convert 8:30 AM to radians
+hours = 8.5 # 8:30 AM
+angle = (hours / 24) * 2 * pi - pi
+mu = 11.46
+kappa = 5.825
+
+
+cdf_value = pvonmises(angle, mu, kappa)
+
+# Calculate the probability of a first pickup at 8:30 AM or later
+probability = 1 - cdf_value
+
+print(probability)
+```
+

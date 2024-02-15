@@ -1,0 +1,80 @@
+---
+title: "figure and trans data"
+author: "Xinyu Zhang"
+date: "2024-02-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(readxl)
+library(lubridate)
+library(circular)
+```
+
+
+```{r}
+#Stay up late
+dfz <- data.frame(data_zhang)
+head(dfz$Pickup.1st)
+
+dfz$hours <- hour(ymd_hms(dfz$Pickup.1st))
+
+dfz$stayuplate = ifelse(dfz$hours >= 0 & dfz$hours <= 5, 1, 0)
+```
+
+```{r}
+#Socialscreentime
+dfz$Social.ST.min <- log(dfz$Social.ST.min)
+```
+
+
+```{r}
+#density
+time_to_angle <- function(time) {
+  # Extract hours and minutes
+  hrs <- as.numeric(format(time, "%H"))
+  mins <- as.numeric(format(time, "%M"))
+  
+  # Calculate the angle (0 degrees at midnight, 360 degrees at next midnight)
+  angle <- (hrs * 60 + mins) / (24 * 60) * 360
+  return(angle)
+}
+
+# Apply the function to the time column to create a new angle column
+dfz$Pickup.1st.angle <- sapply(dfz$Pickup.1st, time_to_angle)
+dfz$Pickup.1st.circular <- circular(dfz$Pickup.1st.angle, units = "degrees",template='clock24')
+screendata.den = density(dfz$Pickup.1st.circular, bw = 15)
+plot(screendata.den, col="blue")
+```
+```{r}
+#
+ggplot(dfz, aes(x = sex, y = value, fill = variable)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(title = "Stacked Bar Chart of Sex by Apps and Devices",
+       x = "Sex",
+       y = "Count",
+       fill = "Category") +
+  theme_minimal()
+
+
+dfz.app <- subset(dfz, select = c(sex, apps, devices))
+
+df_long <- reshape2::melt(dfz.app, id.vars = "sex")
+
+# 绘制堆叠图
+ggplot(df_long, aes(x = sex, y = value, fill = variable)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(title = "Stacked Bar Chart of Sex by Apps and Devices",
+       x = "Sex",
+       y = "Count",
+       fill = "Category") +
+  theme_minimal()
+
+```
+

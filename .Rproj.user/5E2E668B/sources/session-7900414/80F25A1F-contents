@@ -1,0 +1,23 @@
+
+#library(ggplot2)
+library(dplyr)
+library(readxl)
+
+
+data_bulun = read.csv("BulunTe_IphoneMonitor.csv") %>% tibble::tibble()
+
+data_bulun %>% head()
+data_bulun %>% names()
+
+
+data_xin = read_excel("xinweiw_baseline_data.xlsx")
+data_xin %>% head()
+data_xin %>% names()
+
+data_zhang = read_excel("data.csv") %>% tibble::tibble() 
+data_zhang %>% head()
+data_zhang %>% names()
+
+
+
+

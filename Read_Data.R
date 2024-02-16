@@ -1,6 +1,8 @@
 if (!requireNamespace("here", quietly = TRUE)) {
   install.packages("here")
 }
+Sys.setenv(LANGUAGE = "en")
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
 library(here)
 setwd(here())
 
@@ -8,17 +10,60 @@ setwd(here())
 library(dplyr)
 library(readxl)
 
-data_bulun = read.csv("BulunTe_IphoneMonitor.csv") %>% tibble::tibble()
-data_bulun %>% head()
-data_bulun %>% names()
-data_bulun$Date = data_bulun$Date %>% as.Date(.,format="%Y/%m/%d")
-data_bulun = data_bulun %>% rename("non-academic"="non.academic")
 
 data_xin = read_excel("xinweiw_baseline_data.xlsx")
 data_xin %>% head()
-data_xin %>% names()
 data_xin$Date = data_xin$Date %>% as.Date(.,format="%m/%d/%Y")
-data_xin = data_xin %>% rename("course.hours"="course hours")
+data_xin = data_xin %>% mutate(
+  Duration.per.use = Total.ST.min/Pickups
+)
+data_xin$Weekday = (weekdays(data_xin$Date)  %in% c( "Monday", 
+                                  "Tuesday", 
+                                  "Wednesday", 
+                                  "Thursday", 
+                                  "Friday")) %>% as.numeric()
+data_xin$Semester = (data_xin$Date > as.Date("2024-01-09",format="%Y-%m-%d")) %>% as.numeric()
+data_xin$Semester.weekday = data_xin$Semester * data_xin$Weekday
+
+column_names = data_xin %>% names()
+
+#----------------------------Bulun Te`s Data--------------------------`
+
+data_bulun = read.csv("BulunTe_IphoneMonitor.csv") %>% tibble::tibble()
+names(data_bulun) = data_bulun %>% names() %>% tools::toTitleCase()
+data_bulun %>% head()
+data_bulun$Date = data_bulun$Date %>% as.Date(.,format="%Y/%m/%d")
+
+# Data needed to be filled
+data_bulun$Temperature_C = rep(0, nrow(data_bulun))
+data_bulun$Temperature_F = rep(0, nrow(data_bulun))
+data_bulun$Snow = rep(0, nrow(data_bulun))
+
+# Rename the columns
+data_bulun = data_bulun %>% rename("Non-academic"="Non.academic")
+
+# Mutating data
+data_bulun = data_bulun %>% 
+  mutate(Social.Time.Ratio = Social.ST.min/Total.ST.min, 
+         Duration.per.use = Total.ST.min/Pickups,
+         Stay.late = as.numeric(Pickup.1st < "3:00"),
+         Weekday = as.numeric(weekdays(Date)  %in% c( "Monday", 
+                                                     "Tuesday", 
+                                                     "Wednesday", 
+                                                     "Thursday", 
+                                                     "Friday")),
+         Semester = as.numeric(Date > as.Date("2024-01-09",format="%Y-%m-%d")),
+         Semester.weekday = Semester * Weekday
+  )
+
+
+setdiff(column_names,names(data_bulun))
+setdiff(names(data_bulun),column_names)
+
+
+#-----------------------------Zhang`s Data--------------------------`
+
+#data_xin = data_xin %>% rename("course.hours"="course hours")
 
 data_zhang = read_excel("data.csv") %>% tibble::tibble() 
 data_zhang %>% head()
@@ -29,5 +74,8 @@ data_zhang = data_zhang %>% select( data_xin %>% names())
 
 data_merge = rbind(data_bulun, data_xin, data_zhang)
 
-#save(data_merge,data_bulun,data_xin,data_zhang, file = "GroupData.RData")
+#---------------Manipulating------------------
+
+
+
 

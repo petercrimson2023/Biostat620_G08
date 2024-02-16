@@ -8,6 +8,7 @@ setwd(here())
 
 #library(ggplot2)
 library(dplyr)
+library(tidyr)
 library(readxl)
 
 
@@ -24,6 +25,11 @@ data_xin$Weekday = (weekdays(data_xin$Date)  %in% c( "Monday",
                                   "Friday")) %>% as.numeric()
 data_xin$Semester = (data_xin$Date > as.Date("2024-01-09",format="%Y-%m-%d")) %>% as.numeric()
 data_xin$Semester.weekday = data_xin$Semester * data_xin$Weekday
+
+data_xin$Pickup.1st = data_xin$Pickup.1st %>% 
+  strptime(., format = "%Y-%m-%d %H:%M:%S", tz = "UTC") %>% 
+  format(., format = "%H:%M") %>%
+  replace_na(., "00:00")
 
 column_names = data_xin %>% names()
 

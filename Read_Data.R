@@ -1,14 +1,18 @@
+
+# Set working directory to the project root
 if (!requireNamespace("here", quietly = TRUE)) {
   install.packages("here")
 }
-Sys.setenv(LANGUAGE = "en")
-Sys.setlocale("LC_TIME", "en_US.UTF-8")
 library(here)
 setwd(here())
 
-#library(ggplot2)
-library(dplyr)
-library(tidyr)
+# set default language and time zone
+Sys.setenv(LANGUAGE = "en")
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+
+# Load the libraries
+library(tidyverse)
 library(readxl)
 
 
@@ -63,6 +67,7 @@ data_bulun = data_bulun %>%
   )
 
 
+# Check the difference between the column names
 setdiff(column_names,names(data_bulun))
 setdiff(names(data_bulun),column_names)
 
@@ -74,14 +79,44 @@ setdiff(names(data_bulun),column_names)
 data_zhang = read_excel("data.csv") %>% tibble::tibble() 
 data_zhang %>% head()
 data_zhang %>% names()
+names(data_zhang) = data_zhang %>% names() %>% tools::toTitleCase()
 data_zhang$Date = data_zhang$Date %>% as.Date(.,format="%Y-%m-%d")
-data_zhang = data_zhang %>% rename("course.hours"="course hours")
-data_zhang = data_zhang %>% select( data_xin %>% names())
 
-data_merge = rbind(data_bulun, data_xin, data_zhang)
+data_zhang = data_zhang %>% rename("Course.hours"="Course Hours",
+                                   "Non-academic"="Non-Academic")
 
-#---------------Manipulating------------------
+data_zhang$Pickup.1st = data_zhang$Pickup.1st %>% 
+  strptime(., format = "%Y-%m-%d %H:%M:%S", tz = "UTC") %>% 
+  format(., format = "%H:%M") %>%
+  replace_na(., "00:00")
 
+data_zhang = data_zhang %>% 
+  mutate(Social.Time.Ratio = Social.ST.min/Total.ST.min, 
+         Duration.per.use = Total.ST.min/Pickups,
+         Stay.late = as.numeric(Pickup.1st < "3:00"),
+         Weekday = as.numeric(weekdays(Date)  %in% c( "Monday", 
+                                                     "Tuesday", 
+                                                     "Wednesday", 
+                                                     "Thursday", 
+                                                     "Friday")),
+         Semester = as.numeric(Date > as.Date("2024-01-09",format="%Y-%m-%d")),
+         Semester.weekday = Semester * Weekday,
+         Temperature_C = rep(0, nrow(data_zhang)),
+         Temperature_F = rep(0, nrow(data_zhang)),
+         Snow = rep(0, nrow(data_zhang))
+  ) %>% select(column_names) 
+
+# Check the difference between the column names
+setdiff(column_names,names(data_zhang))
+setdiff(names(data_zhang),column_names)
+
+#---------------Save as RData for next load------------------
+
+data_merge = rbind(data_xin, data_bulun, data_zhang)
+
+save(data_xin,data_bulun,
+     data_zhang,data_merge,
+     file = "GroupData.RData")
 
 
 

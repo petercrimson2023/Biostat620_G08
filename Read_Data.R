@@ -56,7 +56,7 @@ data_bulun = data_bulun %>% rename("Non-academic"="Non.academic")
 data_bulun = data_bulun %>% 
   mutate(Social.Time.Ratio = Social.ST.min/Total.ST.min, 
          Duration.per.use = Total.ST.min/Pickups,
-         Stay.late = as.numeric(Pickup.1st < "3:00"),
+         Stay.late = as.numeric(Pickup.1st < "03:00"),
          Weekday = as.numeric(weekdays(Date)  %in% c( "Monday", 
                                                      "Tuesday", 
                                                      "Wednesday", 
@@ -73,8 +73,6 @@ setdiff(names(data_bulun),column_names)
 
 
 #-----------------------------Zhang`s Data--------------------------`
-
-#data_xin = data_xin %>% rename("course.hours"="course hours")
 
 data_zhang = read_excel("data.csv") %>% tibble::tibble() 
 data_zhang %>% head()
@@ -93,7 +91,7 @@ data_zhang$Pickup.1st = data_zhang$Pickup.1st %>%
 data_zhang = data_zhang %>% 
   mutate(Social.Time.Ratio = Social.ST.min/Total.ST.min, 
          Duration.per.use = Total.ST.min/Pickups,
-         Stay.late = as.numeric(Pickup.1st < "3:00"),
+         Stay.late = as.numeric(Pickup.1st < "03:00") ,
          Weekday = as.numeric(weekdays(Date)  %in% c( "Monday", 
                                                      "Tuesday", 
                                                      "Wednesday", 
@@ -120,3 +118,4 @@ save(data_xin,data_bulun,
 
 
 
+column_names %>% cat(.,sep=", ")

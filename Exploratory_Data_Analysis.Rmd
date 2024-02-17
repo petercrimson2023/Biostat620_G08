@@ -2,7 +2,10 @@
 title: "Plotting"
 author: "Bulun Te"
 date: "2024-02-16"
-output: html_document
+output:
+  pdf_document: 
+    latex_engine: xelatex
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -28,8 +31,8 @@ if (!requireNamespace("here", quietly = TRUE)) {
 }
 library(here)
 setwd(here())
-#source("EDA_func.R")
 
+source("EDA_func.R")
 
 # set default language and time zone
 Sys.setenv(LANGUAGE = "en")
@@ -94,7 +97,8 @@ ggplot(melted_cormat, aes(Var1, Var2, fill=value))+
                        name="Pearson\nCorrelation") +
   theme_minimal()+ 
   theme(axis.text.x = element_text(angle = 45, vjust = 1, size = 12, hjust = 1))+
-  coord_fixed()
+  coord_fixed()+
+  labs(title = "Heatmap for Correlation Matrix for Xinwei Wang")
 
 ```
 

@@ -105,18 +105,24 @@ ggplot(melted_cormat, aes(Var1, Var2, fill=value))+
 
 ```{r,fig.width=15, fig.height=14}
 
-ggpairs(data_xin %>% select(Total.ST.min,
-                            Social.ST.min,
-                            Pickups,
-                            Duration.per.use,
-                            Temperature_F),
-        lower = list(continuous = wrap("points", alpha = 0.3, size = 2.5)), 
-        axisLabels = "none")+
-        theme(text = element_text(size = 25), # 调整所有文本大小
-        axis.title = element_text(size = 14), # 调整轴标题大小
-        axis.text = element_text(size = 12))+
-  labs(title = "Pairwise Scatterplot for Xinwei Wang")+
-  theme(plot.title = element_text(hjust = 0.5))
+# ggpairs(data_xin %>% select(Total.ST.min,
+#                             Social.ST.min,
+#                             Pickups,
+#                             Duration.per.use,
+#                             Temperature_F),
+#         lower = list(continuous = wrap("points", alpha = 0.3, size = 2.5)), 
+#         axisLabels = "none")+
+#         theme(text = element_text(size = 25), # 调整所有文本大小
+#         axis.title = element_text(size = 14), # 调整轴标题大小
+#         axis.text = element_text(size = 12))+
+#   labs(title = "Pairwise Scatterplot for Xinwei Wang")+
+#   theme(plot.title = element_text(hjust = 0.5))
+
+plot_pairwise(data_xin, "Xinwei Wang")
+#plot_pairwise(data_bulun, "Bulun Te")
+plot_pairwise(data_zhang, "Xinyu Zhang")
+
+
 
 
 ```

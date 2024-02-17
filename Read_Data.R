@@ -80,8 +80,7 @@ data_zhang %>% names()
 names(data_zhang) = data_zhang %>% names() %>% tools::toTitleCase()
 data_zhang$Date = data_zhang$Date %>% as.Date(.,format="%Y-%m-%d")
 
-data_zhang = data_zhang %>% rename("Course.hours"="Course Hours",
-                                   "Non-academic"="Non-Academic")
+data_zhang = data_zhang %>% rename("Non-academic"="Non-Academic")
 
 data_zhang$Pickup.1st = data_zhang$Pickup.1st %>% 
   strptime(., format = "%Y-%m-%d %H:%M:%S", tz = "UTC") %>% 
@@ -91,17 +90,13 @@ data_zhang$Pickup.1st = data_zhang$Pickup.1st %>%
 data_zhang = data_zhang %>% 
   mutate(Social.Time.Ratio = Social.ST.min/Total.ST.min, 
          Duration.per.use = Total.ST.min/Pickups,
-         Stay.late = as.numeric(Pickup.1st < "03:00") ,
          Weekday = as.numeric(weekdays(Date)  %in% c( "Monday", 
                                                      "Tuesday", 
                                                      "Wednesday", 
                                                      "Thursday", 
                                                      "Friday")),
          Semester = as.numeric(Date > as.Date("2024-01-09",format="%Y-%m-%d")),
-         Semester.weekday = Semester * Weekday,
-         Temperature_C = rep(0, nrow(data_zhang)),
-         Temperature_F = rep(0, nrow(data_zhang)),
-         Snow = rep(0, nrow(data_zhang))
+         Semester.weekday = Semester * Weekday
   ) %>% select(column_names) 
 
 # Check the difference between the column names

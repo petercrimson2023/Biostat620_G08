@@ -42,6 +42,68 @@ load("GroupData.RData")
 
 ```
 
+```{r}
+
+plot(data_xin$Total.ST.min, type = "l", col = "blue", xlab = "Time", ylab = "Total Screen Time (min)", main = "Total Screen Time for Xinwei Wang")
+plot(data_bulun$Total.ST.min, type = "l", col = "blue", xlab = "Time", ylab = "Total Screen Time (min)", main = "Total Screen Time for Bulun Te")
+plot(data_zhang$Total.ST.min, type = "l", col = "blue", xlab = "Time", ylab = "Total Screen Time (min)", main = "Total Screen Time for Xinyu Zhang")
+
+```
+
+```{r}
+
+plot(diff(data_xin$Total.ST.min), type = "l", col = "blue", xlab = "Time", ylab = "Total Screen Time (min)", main = "Total Screen Time for Xinwei Wang")
+plot(diff(data_bulun$Total.ST.min), type = "l", col = "blue", xlab = "Time", ylab = "Total Screen Time (min)", main = "Total Screen Time for Bulun Te")
+plot(diff(data_zhang$Total.ST.min), type = "l", col = "blue", xlab = "Time", ylab = "Total Screen Time (min)", main = "Total Screen Time for Xinyu Zhang")
+
+```
+
+```{r}
+
+```
+
+
+
+
+```{r}
+
+acf(data_xin$Total.ST.min, lag.max = 100, main = "ACF for Total Screen Time for Xinwei Wang")
+acf(data_bulun$Total.ST.min, lag.max = 100, main = "ACF for Total Screen Time for Bulun Te")
+acf(data_zhang$Total.ST.min, lag.max = 100, main = "ACF for Total Screen Time for Xinyu Zhang")
+
+```
+
+```{r}
+
+pacf(data_xin$Total.ST.min, lag.max = 100, main = "PACF for Total Screen Time for Xinwei Wang")
+pacf(data_bulun$Total.ST.min, lag.max = 100, main = "PACF for Total Screen Time for Bulun Te")
+pacf(data_zhang$Total.ST.min, lag.max = 100, main = "PACF for Total Screen Time for Xinyu Zhang")
+
+```
+
+```{r}
+
+ur.ers(data_xin$Total.ST.min,
+       model="trend",
+       lag.max=15) %>% summary()
+
+ur.ers(data_bulun$Total.ST.min,
+       model="trend",
+       lag.max=15) %>% summary()
+
+ur.ers(data_zhang$Total.ST.min,
+       model="trend",
+       lag.max=15) %>% summary()
+
+```
+
+```{r}
+
+
+```
+
+
+
 ## Circular plot for Pickup.1st
 
 ```{r,fig.width=20, fig.height=20}

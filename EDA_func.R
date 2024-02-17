@@ -129,3 +129,36 @@ plot_pairwise = function(data,user_name)
   return(gg_temp)
 }
 
+plot_IMF = function(data,user_name)
+{
+  if(!require("EMD"))
+  {
+    install.packages("EMD")
+    
+  }
+  
+  library("EMD")
+  
+  IMF_series = emd(data$Social.ST.min,1:nrow(data))$imf
+  
+  n = dim(IMF_series)[2]
+  
+  res = emd(data$Social.ST.min,1:nrow(data))$residue
+  
+  IMF_series = cbind(IMF_series,res)
+  
+  IMF_series = as.data.frame(IMF_series)
+  
+  x = 1:nrow(data)
+  
+  par(mfrow=c(n+1,1))
+  
+  for(i in 1:n)
+  {
+    plot(x,IMF_series[,i], type = "l", col = "blue", xlab = "Time", ylab = "IMF", main = paste("IMF",i,"for Social Screen Time for ",user_name))
+  }
+  
+  plot(x,IMF_series[,n+1], type = "l", col = "red", xlab = "Time", ylab = "Residue", main = paste("Residue for Social Screen Time for ",user_name))
+  
+}
+

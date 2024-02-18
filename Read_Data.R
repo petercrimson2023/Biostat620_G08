@@ -45,10 +45,6 @@ data_bulun %>% head()
 data_bulun$Date = data_bulun$Date %>% as.Date(.,format="%Y/%m/%d")
 
 # Data needed to be filled
-data_bulun$Temperature_C = rep(0, nrow(data_bulun))
-data_bulun$Temperature_F = rep(0, nrow(data_bulun))
-data_bulun$Snow = rep(0, nrow(data_bulun))
-
 # Rename the columns
 data_bulun = data_bulun %>% rename("Non-academic"="Non.academic")
 
@@ -97,7 +93,7 @@ data_zhang = data_zhang %>%
                                                      "Friday")),
          Semester = as.numeric(Date > as.Date("2024-01-09",format="%Y-%m-%d")),
          Semester.weekday = Semester * Weekday
-  ) %>% select(column_names) 
+  ) %>% select(all_of(column_names)) 
 
 # Check the difference between the column names
 setdiff(column_names,names(data_zhang))

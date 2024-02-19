@@ -64,7 +64,6 @@ Box.test(data_zhang$Social.ST.min, lag = 11, type = "Ljung-Box")
 
 ```
 
-
 ## Circular plot for Pickup.1st
 
 ```{r,fig.width=20, fig.height=20}

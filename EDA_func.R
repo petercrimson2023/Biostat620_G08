@@ -90,8 +90,8 @@ plot_occupation_time_curve <-
       geom_point(size = 1) +
       geom_line() +
       labs(
-        title = paste(user, " Social.ST.min grpuped by ", condition_column),
-        x = "Social Screen Time (min)",
+        title = paste(user, time_column , "grpuped by ", condition_column),
+        x = time_column,
         y = "Occupation Time Curve"
       ) +
       theme(plot.title = element_text(hjust = 0.5)) +
@@ -113,16 +113,16 @@ plot_occupation_time_curve <-
 
 plot_pairwise = function(data,user_name)
 {
-  gg_temp = ggpairs(data %>% select(Total.ST.min,
-                              Social.ST.min,
+  gg_temp = ggpairs(data %>% select(Social.ST.min,
                               Pickups,
                               Duration.per.use,
-                              Temperature_F),
+                              Temperature_F,
+                              Steps),
           lower = list(continuous = wrap("points", alpha = 0.3, size = 2.5)), 
           axisLabels = "none")+
-    theme(text = element_text(size = 25), # 调整所有文本大小
-          axis.title = element_text(size = 14), # 调整轴标题大小
-          axis.text = element_text(size = 12))+
+    theme(text = element_text(size = 10), 
+          axis.title = element_text(size = 14),
+          axis.text = element_text(size = 14))+
     labs(title = paste("Pairwise Scatterplot for ",user_name))+
     theme(plot.title = element_text(hjust = 0.5))
   
@@ -161,4 +161,38 @@ plot_IMF = function(data,user_name)
   plot(x,IMF_series[,n+1], type = "l", col = "red", xlab = "Time", ylab = "Residue", main = paste("Residue for Social Screen Time for ",user_name))
   
 }
+
+
+plot_heatmap = function(data,user_name)
+{
+  cormat = cor(data_xin %>% select(Social.ST.min,
+                                   Duration.per.use,
+                                   Temperature_F,
+                                   Steps,))
+  melted_cormat = melt(cormat)
+  gg_temp = ggplot(melted_cormat, aes(Var1, Var2, fill=value))+
+    geom_tile(color="white")+
+    scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+                         midpoint=0, limit=c(-1,1), space="Lab", 
+                         name="Pearson\nCorrelation") +
+    theme_minimal()+ 
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, size = 12, hjust = 1))+
+    coord_fixed()+
+    labs(title = paste0("Correlation Heatmap for ",user_name),
+         x = "Variables",
+         y = "Variables")
+  
+  return(gg_temp)
+}
+
+
+
+
+
+
+
+
+
+
+
 

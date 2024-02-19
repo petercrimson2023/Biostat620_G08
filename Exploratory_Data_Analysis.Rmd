@@ -103,66 +103,46 @@ violin_bulun+violin_xin+violin_zhang+occu_bulun+occu_xin+occu_zhang+plot_layout(
 ```
 
 
-```{r}
+```{r,fig.width=10, fig.height=9}
 
-cormat = cor(data_xin %>% select(Total.ST.min,
-                                 Social.ST.min,
-                                 Pickups,
-                                 Duration.per.use,
-                                 Temperature_C))
-melted_cormat = melt(cormat)
-ggplot(melted_cormat, aes(Var1, Var2, fill=value))+
-  geom_tile(color="white")+
-  scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
-                       midpoint=0, limit=c(-1,1), space="Lab", 
-                       name="Pearson\nCorrelation") +
-  theme_minimal()+ 
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, size = 12, hjust = 1))+
-  coord_fixed()+
-  labs(title = "Heatmap for Correlation Matrix for Xinwei Wang")
+g_xin = plot_heatmap(data_xin, "Xinwei Wang")
+g_bulun = plot_heatmap(data_bulun, "Bulun Te")
+g_zhang = plot_heatmap(data_zhang, "Xinyu Zhang")
+
+g_xin+g_bulun+g_zhang+plot_layout(ncol = 2)
 
 ```
 
 
-```{r,fig.width=15, fig.height=14}
-
-# ggpairs(data_xin %>% select(Total.ST.min,
-#                             Social.ST.min,
-#                             Pickups,
-#                             Duration.per.use,
-#                             Temperature_F),
-#         lower = list(continuous = wrap("points", alpha = 0.3, size = 2.5)), 
-#         axisLabels = "none")+
-#         theme(text = element_text(size = 25), # 调整所有文本大小
-#         axis.title = element_text(size = 14), # 调整轴标题大小
-#         axis.text = element_text(size = 12))+
-#   labs(title = "Pairwise Scatterplot for Xinwei Wang")+
-#   theme(plot.title = element_text(hjust = 0.5))
+```{r,fig.width=8, fig.height=7}
 
 plot_pairwise(data_xin, "Xinwei Wang")
-#plot_pairwise(data_bulun, "Bulun Te")
+plot_pairwise(data_bulun, "Bulun Te")
 plot_pairwise(data_zhang, "Xinyu Zhang")
 
 
-
-
 ```
 
 
+## Weather grouped by stay up
 
-```{r,fig.width=15, fig.height=14}
+```{r,fig.width=15, fig.height=6}
 
+g_xin = plot_occupation_time_curve(data_xin, "Temperature_F", "Stay.late", c(1, 0), c("blue", "red"),"Xinwei Wang")
+g_bulun = plot_occupation_time_curve(data_bulun, "Temperature_F", "Stay.late", c(1, 0), c("blue", "red"),"Bulun Te")
+g_zhang = plot_occupation_time_curve(data_zhang, "Temperature_F", "Stay.late", c(1, 0), c("blue", "red"),"Xinyu Zhang")
 
-
-plot_IMF(data_bulun, "Bulun Te")
-plot_IMF(data_xin, "Xinwei Wang")
-plot_IMF(data_zhang, "Xinyu Zhang")
-
-
+g_xin+g_bulun+g_zhang+plot_layout(ncol = 3)
 
 ```
 
-```{r,fig.width=15, fig.height=14}
+```{r,fig.width=15, fig.height=6}
+
+g_xin = plot_occupation_time_curve(data_xin, "Steps", "Stay.late", c(1, 0), c("blue", "red"),"Xinwei Wang")
+g_bulun = plot_occupation_time_curve(data_bulun, "Steps", "Stay.late", c(1, 0), c("blue", "red"),"Bulun Te")
+g_zhang = plot_occupation_time_curve(data_zhang, "Steps", "Stay.late", c(1, 0), c("blue", "red"),"Xinyu Zhang")
+
+g_xin+g_bulun+g_zhang+plot_layout(ncol = 3)
 
 ```
 

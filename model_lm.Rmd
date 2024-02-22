@@ -36,11 +36,11 @@ data_merge$Steps = data_merge$Steps/100
 ```
 
 ```{r}
-model_inter <- lm(Social.ST.min ~ Stay.late + Duration.per.use + Temperature_F + Snow + Weekday + Semester +Steps +Steps:Weekday + Temperature_F:Snow, data = data_merge)
+model_inter <- lm(Social.ST.min ~ Stay.late + Duration.per.use + Temperature.F + Snow + Weekday + Semester +Steps +Steps:Weekday + Temperature.F:Snow, data = data_merge)
 summary(model_inter)
 vif(model_inter)
 
-model_lag <-  lm(Social.ST.min ~ Social.ST.min.lag1 + Stay.late + Duration.per.use + Temperature_F + Snow + Weekday + Semester +Steps +Steps:Weekday + Temperature_F:Snow, data = data_merge)
+model_lag <-  lm(Social.ST.min ~ Social.ST.min.lag1 + Stay.late + Duration.per.use + Temperature.F + Snow + Weekday + Semester +Steps +Steps:Weekday + Temperature.F:Snow, data = data_merge)
 summary(model_lag)
 vif(model_lag)
 ```

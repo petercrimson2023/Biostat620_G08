@@ -11,8 +11,13 @@ Leveraging data collected from a dedicated cohort of students, we meticulously p
 - **Exploratory Analysis**: Through `EDA_func.R` and `Exploratory_Data_Analysis.Rmd`, we embark on a visual and statistical exploration, unearthing initial insights and patterns that guide our further inquiry.
 - **Modeling the Impact**: The essence of our study is captured in `Federated_LR.Rmd` and `model_lm.Rmd`, where we apply federated learning and linear regression models to dissect the relationship between screen time and sleep, pushing the boundaries of traditional data analysis.
 
-## Discoveries and Reflections
-Our findings illuminate the complex dynamics between digital engagement and sleep, highlighting significant correlations that beckon further exploration. While the study opens new pathways for understanding, it also humbly acknowledges its limitations, including the scale of data and potential confounding factors. This reflection sets the stage for future investigations to build upon our foundation.
+## Limitations
+Our study acknowledges several limitations that necessitate a cautious approach to interpreting our findings. The small sample size and focus on college students limit the generalizability of our results, as the observed patterns might not extend to a wider population. Additionally, the data collection span was short and not evenly distributed across different periods of the academic calendar, potentially skewing the representation of habitual behaviors. The binary nature of the 'Stay.late' variable reduces the granularity of our insights into sleep habits by not capturing the variability in the duration individuals remain awake. Moreover, our analysis did not account for factors such as stress levels, academic workload, and mental health status, all of which can significantly impact the relationship between screen time and sleep patterns. Lastly, the 'Steps' variable captures only the activity recorded by a smartphone, omitting any physical activity performed without the device. These limitations underscore the need for a more robust research design in future studies, which should consider a wider range of variables and a more extended data collection period to thoroughly understand the dynamics between social media usage and sleep habits among university students.
+
+---
+
+This section adds critical context to our findings, emphasizing the importance of addressing these limitations in future research to deepen our understanding of the complex interplay between digital engagement and sleep quality.
+
 
 
 ## Collaboration and Contributions

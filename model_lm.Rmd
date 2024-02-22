@@ -19,38 +19,38 @@ library(car)
 ```{r}
 select_V <- c("Date", "Social.ST.min", "Stay.late", "Temperature_F", "Snow", "Duration.per.use", "Weekday", "Semester","Steps")
 load("GroupData.RData")
-
+data_bulun <- data_bulun %>%
+  mutate(Social.ST.min_lag1 = lag(Social.ST.min, 1))
 data_bulun$Steps = data_bulun$Steps - mean(data_bulun$Steps)
 data_xin$Steps = data_xin$Steps - mean(data_xin$Steps)
 data_zhang$Steps = data_zhang$Steps - mean(data_zhang$Steps)
-
 data_bulun$Temperature_F = data_bulun$Temperature_F - mean(data_bulun$Temperature_F)
 data_xin$Temperature_F = data_xin$Temperature_F - mean(data_xin$Temperature_F)
 data_zhang$Temperature_F = data_zhang$Temperature_F - mean(data_zhang$Temperature_F)
-
-
-
-# data_xin <- data_xin %>%
-#   mutate(Social.ST.min_lag1 = lag(Social.ST.min, 1))
-# data_zhang <- data_zhang %>%
-#   mutate(Social.ST.min_lag1 = lag(Social.ST.min, 1))
+data_xin <- data_xin %>%
+  mutate(Social.ST.min_lag1 = lag(Social.ST.min, 1))
+data_zhang <- data_zhang %>%
+  mutate(Social.ST.min_lag1 = lag(Social.ST.min, 1))
 data_merge = rbind(data_xin, data_bulun, data_zhang)
 data_merge$Steps = data_merge$Steps/100
 ```
 
 ```{r}
-model_inter <- lm(Social.ST.min ~ Stay.late +  Duration.per.use +Temperature_F * Snow + Semester + Weekday*Steps, data = data_merge)
+model_inter <- lm(Social.ST.min ~ Stay.late + Temperature_F * Snow + Duration.per.use + Semester + Weekday*Steps, data = data_merge)
 summary(model_inter)
 vif(model_inter)
+
+model_lag <-  lm(Social.ST.min ~ Social.ST.min_lag1 + Stay.late + Temperature_F * Snow + Duration.per.use + Semester + Weekday*Steps, data = data_merge)
+summary(model_lag)
+vif(model_lag)
 ```
 ```{r}
 summary(model_inter)
 
 plot(model_inter$residuals, ylab="Residuals")
 abline(h=0, col="red")
+plot(model_lag$residuals, ylab="Residuals")
+abline(h=0, col="red")
 
-shapiro.test(model_inter$residuals)
-
-bptest(model_inter)
 ```
 

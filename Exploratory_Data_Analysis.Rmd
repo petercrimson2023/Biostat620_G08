@@ -43,6 +43,37 @@ load("GroupData.RData")
 ```
 
 
+# Time Series Plot
+
+```{r}
+
+B_plot = ggplot(data = data_bulun ,aes(x=Date, y=Social.ST.min)) + 
+  geom_line() + 
+  geom_smooth(method = "gam")+
+  labs(title="Bulun's Social Screen Time", x="Date", y="Social ST min")
+
+X_plot = ggplot(data = data_xin ,aes(x=Date, y=Social.ST.min)) +
+  geom_line() + 
+  geom_smooth(method = "gam")+
+  labs(title="Xinwei's Social Screen Time", x="Date", y="Social ST min")+
+  theme_minimal()
+
+Z_plot = ggplot(data = data_zhang ,aes(x=Date, y=Social.ST.min)) +
+  geom_line() + 
+  geom_smooth(method = "gam")+
+  labs(title="Zhang's Social Screen Time", x="Date", y="Social ST min")+
+  theme_minimal()
+
+B_plot + X_plot + Z_plot + plot_layout(ncol = 3)
+
+
+```
+
+Time series plots shows that three time series have different trends. Bulun's time series has a increasing trend, Xinwei's time series has a almost constant trend and Zhang's time series has a decreasing trend.
+
+
+## ACF plot for Social Screen Time
+
 
 ```{r,fig.width=15, fig.height=5}
 
@@ -54,6 +85,8 @@ acf(data_zhang$Social.ST.min, lag.max = 15, main = "ACF for Social Screen Time f
 
 ```
 
+ACF plots shows that time series of student 2 almost does not have autocorrelation.
+
 
 
 ```{r}
@@ -63,6 +96,11 @@ Box.test(data_bulun$Social.ST.min, lag = 1, type = "Ljung-Box")
 Box.test(data_zhang$Social.ST.min, lag = 11, type = "Ljung-Box")
 
 ```
+
+Result of Ljung-Box test shows that there is no autocorrelation in the time series of student 3. However, there is autocorrelation in the time series of student 1. 
+
+
+
 
 ## Circular plot for Pickup.1st
 
@@ -148,6 +186,14 @@ g_zhang = plot_occupation_time_curve(data_zhang, "Steps", "Stay.late", c(1, 0), 
 g_xin+g_bulun+g_zhang+plot_layout(ncol = 3)
 
 ```
+
+
+
+
+
+
+
+
 
 
 

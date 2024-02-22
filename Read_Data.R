@@ -16,7 +16,7 @@ library(tidyverse)
 library(readxl)
 
 
-data_xin = read_excel("xinweiw_baseline_data.xlsx")
+data_xin = read_excel("./data/xinweiw_baseline_data.xlsx")
 data_xin %>% head()
 data_xin$Date = data_xin$Date %>% as.Date(.,format="%m/%d/%Y")
 data_xin = data_xin %>% mutate(
@@ -39,7 +39,7 @@ column_names = data_xin %>% names()
 
 #----------------------------Bulun Te`s Data--------------------------`
 
-data_bulun = read.csv("BulunTe_IphoneMonitor.csv") %>% tibble::tibble()
+data_bulun = read.csv("./data/BulunTe_IphoneMonitor.csv") %>% tibble::tibble()
 names(data_bulun) = data_bulun %>% names() %>% tools::toTitleCase()
 data_bulun %>% head()
 data_bulun$Date = data_bulun$Date %>% as.Date(.,format="%Y/%m/%d")
@@ -70,7 +70,7 @@ setdiff(names(data_bulun),column_names)
 
 #-----------------------------Zhang`s Data--------------------------`
 
-data_zhang = read_excel("data.csv") %>% tibble::tibble() 
+data_zhang = read_excel("./data/data.csv") %>% tibble::tibble() 
 data_zhang %>% head()
 data_zhang %>% names()
 names(data_zhang) = data_zhang %>% names() %>% tools::toTitleCase()

@@ -1,3 +1,17 @@
+---
+title: "Federated_LR"
+author: "Bulun Te"
+date: "2024-02-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading data and environment 
+
+```{r}
 if (!requireNamespace("here", quietly = TRUE)) {
   install.packages("here")
 }
@@ -8,6 +22,12 @@ setwd(here())
 Sys.setenv(LANGUAGE = "en")
 Sys.setlocale("LC_TIME", "en_US.UTF-8")
 load("GroupData.RData")
+
+```
+
+## Data constructer for two model
+
+```{r}
 
 data_select = function(data,user_name)
 {
@@ -41,26 +61,6 @@ data_select = function(data,user_name)
 }
 
 
-xin_select = data_select(data_xin,"Xinwei Wang")
-bulun_select = data_select(data_bulun,"Bulun Te")
-zhang_select = data_select(data_zhang,"Xinyu Zhang")
-
-distributed_statistics = list(XtX = t(xin_select$x) %*% xin_select$x+
-                                     t(bulun_select$x) %*% bulun_select$x+
-                                     t(zhang_select$x) %*% zhang_select$x,
-                             XtY = t(xin_select$x) %*% xin_select$y+
-                                      t(bulun_select$x) %*% bulun_select$y+
-                                      t(zhang_select$x) %*% zhang_select$y,
-                             YtY =  t(xin_select$y) %*% xin_select$y+
-                                      t(bulun_select$y) %*% bulun_select$y+
-                                      t(zhang_select$y) %*% zhang_select$y)
-
-beta_dist = (distributed_statistics$XtX %>% solve()) %*% distributed_statistics$XtY
-
-data.frame( X = beta_dist %>% row.names(),
-            coeff = as.vector(beta_dist)) %>% print()
-
-
 data_select_lag = function(data,user_name)
 {
   data_select = data %>% select(Social.ST.min,
@@ -83,7 +83,7 @@ data_select_lag = function(data,user_name)
   y = data_select["Social.ST.min"] %>% as.matrix()
   y= y[2:length(y),]
   x= data_select %>% select(-Social.ST.min) %>% as.matrix()
-  x= x[2:(dim(x)[1]),c(c("Intercept",
+  x= x[2:(dim(x)[1]),c("Intercept",
                          "Social.ST.min.lag1",
                          "Stay.late",
                          "Duration.per.use",
@@ -92,11 +92,44 @@ data_select_lag = function(data,user_name)
                          "Semester",
                          "Steps","Step_Week",
                          "Temperature_F_Snow"
-  )
                         )]
   return(list(x=x,y=y))
 }
 
+```
+
+
+## Coefficient estimation for non-lag model under Federated Learning Scheme
+
+```{r}
+
+xin_select = data_select(data_xin,"Xinwei Wang")
+bulun_select = data_select(data_bulun,"Bulun Te")
+zhang_select = data_select(data_zhang,"Xinyu Zhang")
+
+distributed_statistics = list(XtX = t(xin_select$x) %*% xin_select$x+
+                                     t(bulun_select$x) %*% bulun_select$x+
+                                     t(zhang_select$x) %*% zhang_select$x,
+                             XtY = t(xin_select$x) %*% xin_select$y+
+                                      t(bulun_select$x) %*% bulun_select$y+
+                                      t(zhang_select$x) %*% zhang_select$y,
+                             YtY =  t(xin_select$y) %*% xin_select$y+
+                                      t(bulun_select$y) %*% bulun_select$y+
+                                      t(zhang_select$y) %*% zhang_select$y)
+
+beta_dist = (distributed_statistics$XtX %>% solve()) %*% distributed_statistics$XtY
+
+data.frame( X = beta_dist %>% row.names(),
+            coeff = as.vector(beta_dist)) %>% print()
+
+
+```
+
+
+## Coefficient estimation for lag model under Federated Learning Scheme
+
+
+```{r}
 xin_select = data_select_lag(data_xin,"Xinwei Wang")
 bulun_select = data_select_lag(data_bulun,"Bulun Te")
 zhang_select = data_select_lag(data_zhang,"Xinyu Zhang")
@@ -116,7 +149,4 @@ beta_dist = (distributed_statistics$XtX %>% solve()) %*% distributed_statistics$
 data.frame( X = beta_dist %>% row.names(),
             coeff = as.vector(beta_dist)) %>% print()
 
-
-
-
-
+```

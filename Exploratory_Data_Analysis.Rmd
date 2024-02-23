@@ -78,6 +78,20 @@ summary_all = data_merge %>% select(Social.ST.min,
 ```
 
 
+
+## Baseline covariates
+
+```{r}
+
+baseline_summary = data_merge %>% select(Workmate,Academic,'Non-academic',Age,Sex,Procrastination,Course.hours,Siblings,Devices,Apps) %>% distinct() %>% data.frame()
+
+rownames(baseline_summary) = c("Wang","Te","Zhang")
+
+baseline_summary %>% write.csv("baseline_summary.csv")
+
+
+```
+
 # Time Series Plot
 
 ```{r}

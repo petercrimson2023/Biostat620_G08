@@ -187,6 +187,76 @@ plot_heatmap = function(data,user_name)
 
 
 
+data_select = function(data,user_name)
+{
+  data_select = data %>% select(Social.ST.min,
+                                Stay.late,
+                                Duration.per.use,
+                                Temperature_F,
+                                Snow,
+                                Weekday,
+                                Semester,
+                                Steps) %>% mutate(
+                                  Steps = (Steps-mean(Steps))/100,
+                                  Step_Week = Steps*Weekday,
+                                  Temperature_F = (Temperature_F-mean(Temperature_F)),
+                                  Temperature_F_Snow = Temperature_F*Snow,
+                                  Intercept = rep(1,nrow(data)))
+  
+  
+  y = data_select["Social.ST.min"] %>% as.matrix()
+  x= data_select %>% select(-Social.ST.min) %>% as.matrix()
+  x = x[,c("Intercept",
+           "Stay.late",
+           "Duration.per.use",
+           "Temperature_F",
+           "Snow","Weekday",
+           "Semester",
+           "Steps","Step_Week",
+           "Temperature_F_Snow"
+  )]
+  return(list(x=x,y=y))
+}
+
+
+data_select_lag = function(data,user_name)
+{
+  data_select = data %>% select(Social.ST.min,
+                                Stay.late,
+                                Duration.per.use,
+                                Temperature_F,
+                                Snow,
+                                Weekday,
+                                Semester,
+                                Steps) %>% mutate(
+                                  Social.ST.min.lag1 = lag(Social.ST.min,1),
+                                  Steps = (Steps-mean(Steps))/100,
+                                  Step_Week = Steps*Weekday,
+                                  Temperature_F = (Temperature_F-mean(Temperature_F)),
+                                  Temperature_F_Snow = Temperature_F*Snow,
+                                  Intercept = rep(1,nrow(data))
+                                )
+  
+  
+  y = data_select["Social.ST.min"] %>% as.matrix()
+  y= y[2:length(y),]
+  x= data_select %>% select(-Social.ST.min) %>% as.matrix()
+  x= x[2:(dim(x)[1]),c("Intercept",
+                       "Social.ST.min.lag1",
+                       "Stay.late",
+                       "Duration.per.use",
+                       "Temperature_F",
+                       "Snow","Weekday",
+                       "Semester",
+                       "Steps","Step_Week",
+                       "Temperature_F_Snow"
+  )]
+  return(list(x=x,y=y))
+}
+
+
+
+
 
 
 

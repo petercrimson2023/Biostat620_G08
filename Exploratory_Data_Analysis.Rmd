@@ -42,6 +42,41 @@ load("GroupData.RData")
 
 ```
 
+```{r}
+
+summary_bulun = data_bulun %>% select(Total.ST.min,
+                      Pickups,
+                      Duration.per.use,
+                      Steps,
+                      Temperature_F,
+                      Snow) %>% psych::describe() %>% as.data.frame()
+
+summary_xin = data_xin %>% select(Total.ST.min,
+                      Pickups,
+                      Duration.per.use,
+                      Steps,
+                      Temperature_F,
+                      Snow) %>% psych::describe() %>% as.data.frame()
+
+summary_zhang = data_zhang %>% select(Total.ST.min,
+                      Pickups,
+                      Duration.per.use,
+                      Steps,
+                      Temperature_F,
+                      Snow) %>% psych::describe() %>% as.data.frame()
+
+summary_all = data_merge %>% select(Social.ST.min,
+                      Pickups,
+                      Duration.per.use,
+                      Steps,
+                      Temperature_F,
+                      Snow) %>% psych::describe() %>% as.data.frame() %>% write.csv("summary.csv")
+
+# rbind(summary_bulun,summary_xin,summary_zhang) %>% write.csv("summary.csv")
+
+
+```
+
 
 # Time Series Plot
 

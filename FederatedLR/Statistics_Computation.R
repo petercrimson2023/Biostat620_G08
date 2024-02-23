@@ -32,10 +32,18 @@ Y_mean_2 = Y_mean^2 * n
 Multiple_R2 = 1 - MSE*(n-p-1)/(Y2_SUM-Y_mean_2)
 Adjusted_R2 = 1 - (1-Multiple_R2)*(n-1)/(n-p-1)
 
-t_stat = 
+XtX = data_bulun_list$XtX+data_xinwei_list$XtX+data_zhang_list$XtX
+beta_var = MSE*diag(solve(XtX))
+beta_std = sqrt(beta_var)
 
+t_stat = beta/beta_std
+p_value = 2*pt(-abs(t_stat),n-p-1)
 
+Coeff = data.frame(Estimate = beta%>% as.vector(), 
+                   Std.Error = beta_std, 
+                   t_value = t_stat %>% as.vector(), 
+                   p_value = p_value %>% as.vector()) %>% round(.,5)
 
-
+# rownames(Coeff) = rownames(beta)
 
 

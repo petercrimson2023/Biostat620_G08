@@ -2,10 +2,8 @@ library(here)
 setwd(here())
 
 library(tidyverse)
-
 Sys.setenv(LANGUAGE = "en")
 Sys.setlocale("LC_TIME", "en_US.UTF-8")
-
 
 
 #-----Data Read-------
@@ -43,7 +41,7 @@ data_bulun_temp %>% head()
 
 source("EDA_func.R")
 
-data_bulun_matrix = data_select(data_bulun_temp,"Bulun Te")
+data_bulun_matrix = data_select_lag(data_bulun_temp,"Bulun Te")
 
 X = data_bulun_matrix$x
 Y = data_bulun_matrix$y
@@ -63,7 +61,7 @@ data_bulun_list = list(XtX=XtX,
                        count=count,
                        YtY=YtY)
 
-save(data_bulun_list,file="./FederatedLR/BulunTe_summary.RData")
+save(data_bulun_list,file="./FederatedLR2/BulunTe_summary.RData")
 
 
 

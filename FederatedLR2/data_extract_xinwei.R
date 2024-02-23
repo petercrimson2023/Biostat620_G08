@@ -8,6 +8,7 @@ Sys.setenv(LANGUAGE = "en")
 Sys.setlocale("LC_TIME", "en_US.UTF-8")
 
 
+
 #-------Data Reading---------
 data_xin_temp = read_excel("./data/xinweiw_baseline_data.xlsx")
 
@@ -37,7 +38,7 @@ data_xin_temp$Pickup.1st = data_xin_temp$Pickup.1st %>%
 source("EDA_func.R")
 
 
-data_xin_matrix = data_select(data_xin_temp,"Xinwei Wang")
+data_xin_matrix = data_select_lag(data_xin_temp,"Xinwei Wang")
 
 X = data_xin_matrix$x
 Y = data_xin_matrix$y
@@ -58,7 +59,7 @@ data_xinwei_list = list(XtX=XtX,
                        count=count,
                        YtY=YtY)
 
-save(data_xinwei_list,file="./FederatedLR/XinweiWang_summary.RData")
+save(data_xinwei_list,file="./FederatedLR2/XinweiWang_summary.RData")
 
 
 

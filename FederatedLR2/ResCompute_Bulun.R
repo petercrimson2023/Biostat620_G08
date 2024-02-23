@@ -1,12 +1,17 @@
 library(here)
 setwd(here())
-
 library(tidyverse)
 
 Sys.setenv(LANGUAGE = "en")
 Sys.setlocale("LC_TIME", "en_US.UTF-8")
 
 
+
+# Residual Calculation
+
+load("./FederatedLR2/beta.RData")
+
+beta
 
 #-----Data Read-------
 
@@ -43,30 +48,28 @@ data_bulun_temp %>% head()
 
 source("EDA_func.R")
 
-data_bulun_matrix = data_select(data_bulun_temp,"Bulun Te")
+data_bulun_matrix = data_select_lag(data_bulun_temp,"Bulun Te")
 
 X = data_bulun_matrix$x
 Y = data_bulun_matrix$y
 
 
-#---------Summary Statistics----------
+#--------Residual Calculation---------
 
-XtX = (t(X)%*%X)
-XtY = (t(X)%*%Y)
-Y_mean = mean(Y)
-count = length(Y)
-YtY = (t(Y)%*%Y) %>% as.numeric()
+res = Y - X %*% beta
 
-data_bulun_list = list(XtX=XtX,
-                       XtY=XtY,
-                       Y_mean=Y_mean,
-                       count=count,
-                       YtY=YtY)
+res %>% mean()
+res %>% sum()
 
-save(data_bulun_list,file="./FederatedLR/BulunTe_summary.RData")
+
+RtR_bulun = (t(res) %*% res) %>% as.numeric()
+
+# -22.82103
+# -1004.125
 
 
 
+save(RtR_bulun,file="./FederatedLR2/RtR_bulun.RData")
 
 
 

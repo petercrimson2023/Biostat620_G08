@@ -1,10 +1,14 @@
 library(here)
 setwd(here())
 
-library(tidyverse)
-library(readxl)
 Sys.setenv(LANGUAGE = "en")
 Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+library(tidyverse)
+library(readxl)
+
+
+load("./FederatedLR2/beta.RData")
 
 
 #----------------Reading data-------------------------
@@ -42,33 +46,24 @@ data_zhang_temp = data_zhang_temp %>%
 
 source("EDA_func.R")
 
-data_zhang_matrix = data_select(data_zhang_temp,"Xinyu Zhang")
+data_zhang_matrix = data_select_lag(data_zhang_temp,"Xinyu Zhang")
 
 X = data_zhang_matrix$x
 Y = data_zhang_matrix$y
 
 
-#---------Summary Statistics----------
+res = Y - X %*% beta
 
-XtX = (t(X)%*%X)
-XtY = (t(X)%*%Y)
-Y_mean = mean(Y)
-count = length(Y)
-YtY = (t(Y)%*%Y) %>% as.numeric()
+res %>% mean()
+res %>% sum()
 
+# 16.12421
+# 612.7199
+#-----------------------Data Extract-------------------------
 
-data_zhang_list = list(XtX=XtX,
-                        XtY=XtY,
-                        Y_mean=Y_mean,
-                        count=count,
-                        YtY=YtY)
+RtR_zhang = (t(res) %*% res) %>% as.numeric()
 
-save(data_zhang_list,YtY,file="./FederatedLR/XinyuZhang_summary.RData")
-
-
-
-
-
+save(RtR_zhang,file="./FederatedLR2/RtR_zhang.RData")
 
 
 

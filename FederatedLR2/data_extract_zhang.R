@@ -3,8 +3,11 @@ setwd(here())
 
 library(tidyverse)
 library(readxl)
+
+
 Sys.setenv(LANGUAGE = "en")
 Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
 
 
 #----------------Reading data-------------------------
@@ -42,7 +45,7 @@ data_zhang_temp = data_zhang_temp %>%
 
 source("EDA_func.R")
 
-data_zhang_matrix = data_select(data_zhang_temp,"Xinyu Zhang")
+data_zhang_matrix = data_select_lag(data_zhang_temp,"Xinyu Zhang")
 
 X = data_zhang_matrix$x
 Y = data_zhang_matrix$y
@@ -63,7 +66,7 @@ data_zhang_list = list(XtX=XtX,
                         count=count,
                         YtY=YtY)
 
-save(data_zhang_list,YtY,file="./FederatedLR/XinyuZhang_summary.RData")
+save(data_zhang_list,YtY,file="./FederatedLR2/XinyuZhang_summary.RData")
 
 
 

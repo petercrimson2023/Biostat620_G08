@@ -5,13 +5,17 @@ setwd(here())
 library(tidyverse)
 
 
-load("./FederatedLR/RtR_bulun.RData")
-load("./FederatedLR/RtR_xin.RData")
-load("./FederatedLR/RtR_zhang.RData")
-load("./FederatedLR/BulunTe_summary.RData")
-load("./FederatedLR/XinweiWang_summary.RData")
-load("./FederatedLR/XinyuZhang_summary.RData")
-load("./FederatedLR/beta.RData")
+Sys.setenv(LANGUAGE = "en")
+Sys.setlocale("LC_TIME", "en_US.UTF-8")
+
+
+load("./FederatedLR2/RtR_bulun.RData")
+load("./FederatedLR2/RtR_xin.RData")
+load("./FederatedLR2/RtR_zhang.RData")
+load("./FederatedLR2/BulunTe_summary.RData")
+load("./FederatedLR2/XinweiWang_summary.RData")
+load("./FederatedLR2/XinyuZhang_summary.RData")
+load("./FederatedLR2/beta.RData")
 
 
 n = data_bulun_list$count+data_xinwei_list$count+data_zhang_list$count
